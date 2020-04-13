@@ -1,0 +1,30 @@
+version: '3.4'
+
+services:
+  db:
+    container_name: bdsql  
+    image: 'mcr.microsoft.com/mssql/server:2019-CU3-ubuntu-18.04'
+    ports:
+        - '1433:1433'
+    environment:
+        SA_PASSWORD: Ricardo@123
+        ACCEPT_EULA: Y
+    networks:
+      - dockersql-network
+
+  backend:
+    container_name: backend
+    image: backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - '5000:80'
+    networks:
+      - dockersql-network
+    depends_on:
+      - db
+
+networks:
+  dockersql-network:
+    external: true
